@@ -1,11 +1,11 @@
+from splinter import Browser
+from bs4 import BeautifulSoup
+import requests
+import pandas as pd
+import time
+
+
 def scrape_to_dict():
-
-    from splinter import Browser
-    from bs4 import BeautifulSoup
-    import requests
-    import pandas as pd
-    import time
-
 
     executable_path = {'executable_path': '/usr/local/bin/chromedriver'}
     browser = Browser('chrome', **executable_path, headless=False)
@@ -17,15 +17,15 @@ def scrape_to_dict():
     browser.visit(news_url)
     time.sleep(2)
 
-   
     html = browser.html
     soup = BeautifulSoup(html, 'html.parser')
 
     news_title = soup.body.find_all('div', class_ = "content_title")[1].text.strip()
 
     news_p = soup.body.find_all('div', class_ = "article_teaser_body")[0].text.strip()
+   
 
-    
+def scrape
 
     #JPL MARS SPACE IMAGES - FEATURED IMAGE
 
@@ -49,8 +49,9 @@ def scrape_to_dict():
     feat_img_result = feat_img[0].a['href']
 
     featured_image_url = 'https://www.jpl.nasa.gov' + feat_img_result
-    
+    return
 
+def scrape
     # MARS FACTS
 
     facts_url = 'https://space-facts.com/mars/'
@@ -61,8 +62,10 @@ def scrape_to_dict():
 
     mars_table_df = table_df.rename(columns={0: 'Mars: Measurement', 1: 'Measurement: Value'})
 
-    
-    
+return
+
+
+def scrape 
     # MARS HEMISPHERES
 
     #Note the inconsistent url
@@ -74,7 +77,7 @@ def scrape_to_dict():
             '/html/body/div[1]/div[1]/div[2]/section/div/div[2]/div[2]/div/a', 
             '/html/body/div[1]/div[1]/div[2]/section/div/div[2]/div[3]/div/a', 
             '/html/body/div[1]/div[1]/div[2]/section/div/div[2]/div[4]/div/a'
-         ]
+             ]
 
 
     hem_title = []
@@ -108,7 +111,10 @@ def scrape_to_dict():
 
   
     browser.quit()
+return
 
+
+#Store results in dictionary
     notebook_dict = {
                 'article_title': news_title, 
                 'article_paragraph': news_p,
