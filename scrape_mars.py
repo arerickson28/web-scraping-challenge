@@ -62,6 +62,8 @@ def scrape():
 
     mars_table_df = table_df.rename(columns={0: 'Mars: Measurement', 1: 'Measurement: Value'})
 
+    mars_table_df.to_html(classes="table table-striped")
+
 # return
 
 

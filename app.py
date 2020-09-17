@@ -10,7 +10,7 @@ mongo = PyMongo(app)
 
 @app.route("/")
 def index():
-    mars_scrape_results = mongo.db.mars_database
+    mars_scrape_results = mongo.db.mars_database.find_one()
     return render_template('index.html', mars_html = mars_scrape_results)
 
 
@@ -22,8 +22,8 @@ def scrape():
     mars_data = scrape_mars.scrape()
 
     mars_scrape_results.update({}, mars_data, upsert = True)
-    
-    return "scraping complete"
+
+    return redirect("/", code = 302)
 
 
 
