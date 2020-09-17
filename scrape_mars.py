@@ -5,7 +5,7 @@ import pandas as pd
 import time
 
 
-def scrape_to_dict():
+def scrape():
 
     executable_path = {'executable_path': '/usr/local/bin/chromedriver'}
     browser = Browser('chrome', **executable_path, headless=False)
@@ -25,7 +25,7 @@ def scrape_to_dict():
     news_p = soup.body.find_all('div', class_ = "article_teaser_body")[0].text.strip()
    
 
-def scrape
+# def scrape
 
     #JPL MARS SPACE IMAGES - FEATURED IMAGE
 
@@ -49,9 +49,9 @@ def scrape
     feat_img_result = feat_img[0].a['href']
 
     featured_image_url = 'https://www.jpl.nasa.gov' + feat_img_result
-    return
+    # return
 
-def scrape
+# def scrape
     # MARS FACTS
 
     facts_url = 'https://space-facts.com/mars/'
@@ -62,10 +62,10 @@ def scrape
 
     mars_table_df = table_df.rename(columns={0: 'Mars: Measurement', 1: 'Measurement: Value'})
 
-return
+# return
 
 
-def scrape 
+# def scrape 
     # MARS HEMISPHERES
 
     #Note the inconsistent url
@@ -111,7 +111,7 @@ def scrape
 
   
     browser.quit()
-return
+# return
 
 
 #Store results in dictionary
