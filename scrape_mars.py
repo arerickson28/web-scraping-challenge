@@ -25,7 +25,7 @@ def scrape():
     news_p = soup.body.find_all('div', class_ = "article_teaser_body")[0].text.strip()
    
 
-# def scrape
+
 
     #JPL MARS SPACE IMAGES - FEATURED IMAGE
 
@@ -49,9 +49,9 @@ def scrape():
     feat_img_result = feat_img[0].a['href']
 
     featured_image_url = 'https://www.jpl.nasa.gov' + feat_img_result
-    # return
+  
 
-# def scrape
+
     # MARS FACTS
 
     facts_url = 'https://space-facts.com/mars/'
@@ -60,68 +60,122 @@ def scrape():
 
     table_df = facts_table[0]
 
-    mars_table_df = table_df.rename(columns={0: 'Mars: Measurement', 1: 'Measurement: Value'})
+    # mars_table_df = table_df.rename(columns={0: 'Mars: Measurement', 1: 'Measurement: Value'})
+    mars_table_df = table_df.to_html(header = False, index = False)
 
-    mars_table_df.to_html(classes="table table-striped")
+    # mars_table_df.to_html(classes="table table-striped")
 
-# return
+    print(mars_table_df)
 
 
-# def scrape 
+
+
+
     # MARS HEMISPHERES
 
     #Note the inconsistent url
-    hemispheres_url = 'https://astrogeology.usgs.gov/search/results?q=hemisphere+enhanced&k1=target&v1=Mars'
+    # hemispheres_url = 'https://astrogeology.usgs.gov/search/results?q=hemisphere+enhanced&k1=target&v1=Mars'
+
+    #alternate site, if previous site is unavailable
+    hemispheres_url = 'https://web.archive.org/web/20181114171728/https://astrogeology.usgs.gov/search/results?q=hemisphere+enhanced&k1=target&v1=Mars'
     browser.visit(hemispheres_url)
 
-    xpaths = [
-            '/html/body/div[1]/div[1]/div[2]/section/div/div[2]/div[1]/div/a', 
-            '/html/body/div[1]/div[1]/div[2]/section/div/div[2]/div[2]/div/a', 
-            '/html/body/div[1]/div[1]/div[2]/section/div/div[2]/div[3]/div/a', 
-            '/html/body/div[1]/div[1]/div[2]/section/div/div[2]/div[4]/div/a'
-             ]
+    time.sleep(2)
 
 
-    hem_title = []
+    hemisphere_image_urls = []
 
-    hem_url = []
+    url_links = browser.find_by_css('a.product-item h3')
 
-    mars_hem_title_url = []
-
-    for path in xpaths :
-        results = browser.find_by_xpath(path)
-        img = results[0]
-        img.click()
+    for i in range(len(url_links)):
+        # create an empty dictionary for each hemisphere
+        hemisphere={}
+        browser.find_by_css('a.product-item h3')[i].click()
+        #get hemisphere title
+        hemisphere['title'] = browser.find_by_css("h2.title").text
+        #next find the sample image anchor tag and get href
+        sample_elem = browser.find_link_by_text('Sample').first
+        hemisphere['img_url'] = sample_elem['href']
+        #Append hemisphere object to list
+        hemisphere_image_urls.append(hemisphere)
+        #Finally navigate back to start again on loop
+        browser.back()
     
-        html = browser.html
-        soup = BeautifulSoup(html, 'html.parser')
+    #*************** CREATE A DICTOIONARY *********************
+    mars_info={}
+    mars_info['news_title'] = news_title
+    mars_info['news_detail'] = news_p
+    mars_info['featured_img_url'] = featured_image_url
+    mars_info['mars_facts_html'] = mars_table_df
+    mars_info['hemisphere_image_urls'] = hemisphere_image_urls
+    # Close the browser
+    browser.quit()
+    # Return results
+    return mars_info
+#             
+
+
+
+
+
+
+#     xpaths = [
+#             '/html/body/div[1]/div[1]/div[2]/section/div/div[2]/div[1]/div/a', 
+#             '/html/body/div[1]/div[1]/div[2]/section/div/div[2]/div[2]/div/a', 
+#             '/html/body/div[1]/div[1]/div[2]/section/div/div[2]/div[3]/div/a', 
+#             '/html/body/div[1]/div[1]/div[2]/section/div/div[2]/div[4]/div/a'
+#              ]
+
+
+#     hem_title = []
+
+#     hem_url = []
+
+#     mars_hem_title_url = []
+
+#     for path in xpaths :
+#         results = browser.find_by_xpath(path)
+#         img = results[0]
+#         img.click()
     
-        title = soup.find('h2', class_ = 'title').text
-        hem_title.append(title)
+#         html = browser.html
+#         soup = BeautifulSoup(html, 'html.parser')
+    
+#         title = soup.find('h2', class_ = 'title').text
+#         hem_title.append(title)
         
     
-        hem = soup.find('div', class_='downloads')
-        hem_result = hem
-        img_url = hem_result.find('a')['href']
-        hem_url.append(img_url)
+#         hem = soup.find('div', class_='downloads')
+#         hem_result = hem
+#         img_url = hem_result.find('a')['href']
+#         hem_url.append(img_url)
        
     
-        mars_hem_title_url.append({'title': title, 'img_url': img_url})
+#         mars_hem_title_url.append({'title': title, 'img_url': img_url})
  
-        browser.visit(hemispheres_url)
+#         browser.visit(hemispheres_url)
 
 
   
-    browser.quit()
-# return
+#     browser.quit()
 
 
-#Store results in dictionary
-    notebook_dict = {
-                'article_title': news_title, 
-                'article_paragraph': news_p,
-                'mars_image': featured_image_url,
-                'mars_data_table': mars_table_df,
-                'hemisphere_image_urls': mars_hem_title_url}
 
-    return notebook_dict
+# #Store results in dictionary
+#     notebook_dict = {}
+    
+#     notebook_dict = {
+#                 'article_title': news_title, 
+#                 'article_paragraph': news_p,
+#                 'mars_image': featured_image_url,
+#                 'mars_data_table': mars_table_df,
+#                 'hemisphere_image_urls': mars_hem_title_url}
+
+    
+#     print(f"index 0 {notebook_dict['article_title']}")
+#     print(f"index 1 {notebook_dict['article_paragraph']}")
+#     print(f"index 2 {notebook_dict['mars_image']}")
+#     print(f"index 3 {notebook_dict['mars_data_table']}")
+#     print(f"index 4 {notebook_dict['hemisphere_image_urls']}")
+
+    # return notebook_dict
